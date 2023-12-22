@@ -10,8 +10,8 @@ pipelines:
               image: golang:1.21.5
               script:
                 - sh ./scripts/ci/test.sh
-  pull-requests:
-    "release/**":
+  branches:
+    "main":
       - stage:
           name: Build
           steps:
