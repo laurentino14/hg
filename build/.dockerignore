@@ -1,0 +1,7 @@
+../.idea
+../.air.toml
+../.env
+#.dockerignore
+../.gitignore
+docker-compose.yml
+../tmp/
