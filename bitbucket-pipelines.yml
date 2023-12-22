@@ -11,7 +11,7 @@ pipelines:
               script:
                 - sh ./scripts/ci/test.sh
   branches:
-    "main":
+    main:
       - stage:
           name: Build
           steps:
@@ -22,5 +22,19 @@ pipelines:
                   - docker
                 script:
                   - sh ./scripts/main/build.sh
+                services:
+                  - docker
+  tags:
+    v*.*.*:
+      - stage:
+          name: Build
+          steps:
+            - step:
+                size: 2x
+                name: Running build script
+                caches:
+                  - docker
+                script:
+                  - sh ./scripts/tags/build.sh
                 services:
                   - docker
