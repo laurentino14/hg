@@ -13,7 +13,7 @@ pipelines:
   branches:
     main:
       - stage:
-          name: Build
+          name: Build main
           steps:
             - step:
                 size: 2x
@@ -27,7 +27,7 @@ pipelines:
   tags:
     v*.*.*:
       - stage:
-          name: Build
+          name: Build tag
           steps:
             - step:
                 size: 2x
