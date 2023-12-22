@@ -1,0 +1,74 @@
+version: "3"
+
+services:
+
+  air:
+    container_name: air
+    image: cosmtrek/air:latest
+    working_dir: /app
+    depends_on:
+      - migrate_db
+      - cockroach
+    ports:
+      - "3000:3000"
+    environment:
+      - ENV=development
+    volumes:
+      - ../:/app/
+
+  app:
+    container_name: app
+    image: sirius
+    build:
+      context: ../
+      dockerfile: build/Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - cockroach
+      - migrate_db
+    links:
+      - cockroach
+    external_links:
+      - cockroach
+    environment:
+      - JWT_SECRET_RT_CLIENT=e1b6a61d-3655-40c4-9397-91d009ee6d48
+      - JWT_SECRET_RT_ADMIN=c8b1dcb0-fe70-4a63-a603-600d9d619c0d
+      - JWT_SECRET_RT_WORKER=a7885af8-dfe0-4b3e-a28a-b134211de82e
+      - JWT_SECRET_AT_CLIENT=c645181b-352b-4810-acf9-6e15001dd3d2
+      - JWT_SECRET_AT_ADMIN=148c2fe1-3d86-42f3-bb03-38de9019fed1
+      - JWT_SECRET_AT_WORKER=4370cb01-8632-45f8-bb2f-5b0ac903002b
+      - DATABASE_URL=postgresql://root@cockroach:26257/defaultdb?sslmode=disable
+      - ADMIN_EMAIL=dev@lvdigital.pro
+      - ADMIN_PASSWORD=admin
+      - RESEND_EMAIL=LV Digital <contato@lvdigital.pro>
+      - RESEND_SECRET=re_EpU6CVss_NzboJq7DJTvNZ6yNY1tBjRei
+      - PAYMENT_API_KEY=sk_test_5bae14e2d10640509878c4db63d0f957
+
+
+  cockroach:
+    hostname: cockroach
+    container_name: cockroach
+    image: cockroachdb/cockroach:v23.1.13
+    command: start-single-node --insecure
+    volumes:
+      - cockroach:/cockroach/cockroachgen
+    ports:
+      - "26257:26257"
+      - "8080:8080"
+
+  migrate_db:
+    container_name: migrate_db
+    image: migrate/migrate
+    links:
+      - cockroach
+    depends_on:
+      - cockroach
+    volumes:
+        - ../internal/infra/data-sources/cockroach-migrations:/migrations
+    command: ["-path","/migrations", "-database", "cockroach://root@cockroach:26257/defaultdb?sslmode=disable&x-force-lock=true", "up"]
+
+
+volumes:
+    cockroach:
+

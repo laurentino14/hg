@@ -1,0 +1,26 @@
+image: atlassian/ci-image:4
+
+pipelines:
+  default:
+    - stage:
+        name: Test
+        steps:
+          - step:
+              name: Running test script
+              image: golang:1.21.5
+              script:
+                - sh ./scripts/ci/test.sh
+  branches:
+    "main":
+      - stage:
+          name: Build
+          steps:
+            - step:
+                size: 2x
+                name: Running build script
+                caches:
+                  - docker
+                script:
+                  - sh ./scripts/release/build.sh
+                services:
+                  - docker
