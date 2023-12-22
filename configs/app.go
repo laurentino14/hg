@@ -72,7 +72,7 @@ func SiriusConfig(db *sql.DB) *fiber.App {
 	}))
 
 	// Docs
-	//docfilepath := path.Join(os.Getenv("PWD"), "internal/release", "docs", "swagger.json")
+	//docfilepath := path.Join(os.Getenv("PWD"), "internal/main", "docs", "swagger.json")
 	//cfg := swagger.Config{
 	//	BasePath: "/docs",
 	//	FilePath: docfilepath,
